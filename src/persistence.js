@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createSessionFromJson } from './domain.js';
 
-const sessionKey = 'session';
+const sessionKey = 'journey3.net/session';
 
 const loadLastSession = async (getNowUtc, getNewId) => {
     const json = await AsyncStorage.getItem(sessionKey)

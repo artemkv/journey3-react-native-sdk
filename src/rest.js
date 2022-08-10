@@ -1,5 +1,3 @@
-import fetch from 'node-fetch';
-
 // TODO:
 // const baseUrl = 'http://127.0.0.1:8070';
 const baseUrl = 'https://journey3-ingest.artemkv.net:8060';

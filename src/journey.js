@@ -76,7 +76,11 @@ export const initializeInternal = async (accountId, appId, version, isRelease) =
         const session = await _persistence.loadLastSession(_getNowUtc, _getNewId);
         if (session != null) {
             console.info('Journey3: Report the end of the previous session');
-            await _rest.postSession(session);
+            try {
+                await _rest.postSession(session);
+            } catch (err) {
+                console.warn(`Journey3: Failed to report the end of the previous session: ${err}`);
+            }
         }
 
         // update current session based on the previous one

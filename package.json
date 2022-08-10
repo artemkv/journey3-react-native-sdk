@@ -1,6 +1,6 @@
 {
   "name": "journey3-react-native-sdk",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Journey3 React Native SDK",
   "type": "module",
   "files": [
@@ -16,16 +16,17 @@
     "name": "artemkv",
     "email": "artemkv@gmail.com"
   },
-  "devDependencies": {
-    "jest": "^28.1.3"
-  },
   "scripts": {
     "start": "node ./src/index.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "dependencies": {
-    "@react-native-async-storage/async-storage": "^1.17.8",
-    "node-fetch": "^3.2.10",
     "uuid": "^8.3.2"
+  },
+  "peerDependencies": {
+    "@react-native-async-storage/async-storage": "^1.17.8"
+  },
+  "devDependencies": {
+    "jest": "^28.1.3"
   }
 }

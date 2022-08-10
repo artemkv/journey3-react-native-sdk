@@ -1,10 +1,8 @@
-import { config, initialize, reportEvent, reportError, reportCrash, reportStageTransition } from './journey.js';
-
-export default {
+export {
     config,
     initialize,
     reportEvent,
     reportError,
     reportCrash,
     reportStageTransition
-};
+} from './journey.js';
