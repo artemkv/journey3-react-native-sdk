@@ -7,10 +7,10 @@
     "src"
   ],
   "main": "src/index.js",
-  "homepage": "",
+  "homepage": "https://github.com/artemkv/journey3-react-native-sdk",
   "repository": {
     "type": "git",
-    "url": "git+"
+    "url": "git+https://github.com/artemkv/journey3-react-native-sdk.git"
   },
   "author": {
     "name": "artemkv",
