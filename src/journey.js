@@ -184,7 +184,7 @@ export const reportError = async (eventName) => {
  * Do not include any personal data as an event name!
  */
 export const reportCrash = async (eventName) => {
-    reportEventInternal(eventName, false, false, true);
+    reportEventInternal(eventName, false, true, true);
 }
 
 const reportEventInternal = async (eventName, isCollapsible, isError, isCrash) => {
@@ -278,8 +278,10 @@ export const reportStageTransition = async (stage, stageName) => {
     try {
         if (currentSession.new_stage.stage < stage) {
             currentSession.new_stage = createStage(stage, stageName, _getNowUtc);
-            currentSession.end = _getNowUtc();
         }
+
+        // update endtime
+        currentSession.end = _getNowUtc();
 
         // save session
         await _persistence.saveSession(currentSession);

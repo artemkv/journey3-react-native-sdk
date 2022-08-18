@@ -107,7 +107,6 @@ test('restore and report previous session', async () => {
     prevSession.prev_stage = stage2;
     prevSession.new_stage = stage3;
 
-    // Setup
     const loadLastSessionMock = mock(() => prevSession);
     const saveSessionMock = mock((_) => { });
     const postSessionHeader = mock((_) => { });
@@ -255,6 +254,7 @@ test('report crash', async () => {
     expectedSession.fst_launch = true;
     expectedSession.evts[CRASH] = 1;
     expectedSession.evt_seq = [CRASH];
+    expectedSession.has_error = true;
     expectedSession.has_crash = true;
     expect(saveSessionMock._getInvocations()).toStrictEqual(2);
     expect(saveSessionMock._getLastCapturedParams()[0]).toStrictEqual(expectedSession);

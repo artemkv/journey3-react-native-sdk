@@ -2,7 +2,7 @@ React Native connector for [Journey3](https://journey3.net/) (Lightweight Anonym
 
 ## Features
 
-Use this library in your React Native app to:
+Use this connector in your React Native app to:
 - Track sessions, unique users and new users
 - Track application feature usage
 - Track user journey stage conversions
@@ -11,11 +11,11 @@ Use this library in your React Native app to:
 ## Getting started
 
 - Register and get an application key at https://journey3.net/
-- Initialize the library to start tracking stats
+- Initialize the connector to start tracking stats
 
 ## Usage
 
-### Installing the library
+### Installing the connector
 
 ```
 yarn add journey3-react-native-sdk
@@ -27,9 +27,9 @@ Additionally, you need to install ```@react-native-async-storage/async-storage``
 yarn add @react-native-async-storage/async-storage
 ```
 
-### Initializing the library
+### Initializing the connector
 
-```
+```js
 import {useEffect} from 'react';
 import {initialize} from 'journey3-react-native-sdk';
 
@@ -49,7 +49,7 @@ useEffect(() => {
 
 Events are used to track feature usage:
 
-```
+```js
 import {reportEvent} from 'journey3-react-native-sdk';
 
 useEffect(() => {
@@ -61,7 +61,7 @@ useEffect(() => {
 
 Errors are special types of events:
 
-```
+```js
 import {reportError} from 'journey3-react-native-sdk';
 
 useEffect(() => {
@@ -73,7 +73,7 @@ useEffect(() => {
 
 Stage transitions are used to build user conversion funnels:
 
-```
+```js
 import {reportStageTransition} from 'journey3-react-native-sdk';
 
 useEffect(() => {
@@ -130,10 +130,10 @@ __Example, good:__ 'click_play', 'click_pause', 'add_to_favorites', 'search_by_a
 
 __Example, bad:__ 'user_12345_bought_item_34556'
 
-As we don't track any personally personally identifiable data, and make our best effort to render the stored data anonymous, we judge that the data collected by the library does not fall within the scope of the GDPR. This means you don't need to ask for the user opt-in.
+As we don't track any personally personally identifiable data, and make our best effort to render the stored data anonymous, we judge that the data collected by the connector does not fall within the scope of the GDPR. This means you don't need to ask for the user opt-in.
 
 That is, unless you abuse the API and use event or stage names that break the anonymity.
 
 This assumption might also break due to some specific circumstances related to your app nature and purpose that we cannot predict.
 
-__This is why we encourage you to review the terms of GDPR law and make your own final decision whether to enable the library with or without opt-in, and whether to mention the data collected in your privacy policy.__
+__This is why we encourage you to review the terms of GDPR law and make your own final decision whether to enable the connector with or without opt-in, and whether to mention the data collected in your privacy policy.__
