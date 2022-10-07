@@ -4,5 +4,6 @@ export {
     reportEvent,
     reportError,
     reportCrash,
-    reportStageTransition
+    reportStageTransition,
+    flushEvents,
 } from './journey.js';

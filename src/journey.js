@@ -1,4 +1,4 @@
-import { createSessionHeader, createSession, createStage } from './domain.js';
+import { createSessionHeader, createSession, createSessionFlush, createStage } from './domain.js';
 import persistence from './persistence.js';
 import restReal from './rest.js';
 import {
@@ -288,5 +288,58 @@ export const reportStageTransition = async (stage, stageName) => {
     } catch (err) {
         console.warn(`Journey3: Cannot update session: ${err}`);
         throw err;
+    }
+}
+
+/**
+ * Flushed the events in the current session.
+ * Use this method to report events before the session is properly terminated.
+ * 
+ * Flushing events introduces extra network trafic, so use it with caution.
+ * Do not flush session every time you report an event, the users won't be happy.
+ * 
+ * Consider flushing the session after first 30 seconds of using the app or upon the app exit.
+ * This might help tracking events coming from users who use the app once 
+ * and then immediately uninstall it, since the full session is reported only when 
+ * the user restarts the app.
+ */
+export const flushEvents = async () => {
+    if (!currentSession) {
+        console.warn(
+            'Journey3: Cannot flush session. Journey have not been initialized.');
+        return;
+    }
+
+    try {
+        // prepare flush
+        const flush = createSessionFlush(
+            currentSession.id,
+            currentSession.acc,
+            currentSession.aid,
+            currentSession.version,
+            currentSession.is_release,
+            currentSession.start);
+        flush.fst_launch = currentSession.fst_launch;
+        flush.evts = currentSession.evts;
+        flush.flushed = currentSession.flushed;
+
+        // send session flush
+        console.info('Journey3: Flush the current session');
+        await _rest.postSessionFlush(flush);
+
+        // copy evts as flushed
+        const flushed = {};
+        for (let evt in currentSession.evts) {
+            flushed[evt] = currentSession.evts[evt];
+        }
+        currentSession.flushed = flushed;
+
+        // update endtime
+        currentSession.end = _getNowUtc();
+
+        // save session
+        await _persistence.saveSession(currentSession);
+    } catch (err) {
+        console.warn(`Journey3: Cannot flush session: ${err}`);
     }
 }

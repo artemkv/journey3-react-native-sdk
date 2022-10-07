@@ -77,7 +77,17 @@ const postSession = async data => {
     }
 }
 
+const postSessionFlush = async data => {
+    try {
+        return await postJson('/session_flush', data);
+    } catch (err) {
+        err.message = "Error sending session flush to Journey: " + err.message;
+        throw err;
+    }
+}
+
 export default {
     postSessionHeader,
-    postSession
+    postSession,
+    postSessionFlush
 };

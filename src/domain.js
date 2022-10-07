@@ -73,7 +73,7 @@ export const createSession = (
 
     return {
         t: 'stail',
-        v: '1.1.0',
+        v: '1.2.0',
 
         id: id,
         acc: accountId,
@@ -95,6 +95,53 @@ export const createSession = (
 
         evts: {},
         evt_seq: [],
+        flushed: {},
+    };
+};
+
+export const createSessionFlush = (
+    id,
+    accountId,
+    appId,
+    version,
+    isRelease,
+    start) => {
+    if (!id) {
+        throw Error('id is mandatory');
+    }
+    if (!accountId) {
+        throw Error('accountId is mandatory');
+    }
+    if (!appId) {
+        throw Error('appId is mandatory');
+    }
+    if (!start) {
+        throw Error('start is mandatory');
+    }
+
+    if (!version) {
+        version = '';
+    }
+    if (!isRelease) {
+        isRelease = false;
+    }
+
+    return {
+        t: 'sflush',
+        v: '1.0.0',
+
+        id: id,
+        acc: accountId,
+        aid: appId,
+        version: version,
+        is_release: isRelease,
+
+        start: start,
+
+        fst_launch: false,
+
+        evts: {},
+        flushed: {},
     };
 };
 

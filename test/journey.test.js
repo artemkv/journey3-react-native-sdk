@@ -4,12 +4,14 @@ import {
     reportEvent,
     reportError,
     reportCrash,
-    reportStageTransition
+    reportStageTransition,
+    flushEvents
 } from '../src/journey.js';
 import {
     createStage,
     createSessionHeader,
     createSession,
+    createSessionFlush,
 } from '../src/domain.js';
 
 const mock = f => {
@@ -47,8 +49,9 @@ const LATER = new Date('2023-01-01T00:00:00.000Z');
 const setup = (
     loadLastSessionMock,
     saveSessionMock,
-    postSessionHeader,
-    postSession,
+    postSessionHeaderMock,
+    postSessionMock,
+    postSessionFlushMock,
     getNowUtc,
     getNewId) => {
     config(
@@ -57,8 +60,9 @@ const setup = (
             saveSession: saveSessionMock,
         },
         {
-            postSessionHeader: postSessionHeader,
-            postSession: postSession,
+            postSessionHeader: postSessionHeaderMock,
+            postSession: postSessionMock,
+            postSessionFlush: postSessionFlushMock,
         },
         getNowUtc,
         getNewId
@@ -69,13 +73,15 @@ test('report the very first session', async () => {
     // Setup
     const loadLastSessionMock = mock(() => null);
     const saveSessionMock = mock((_) => { });
-    const postSessionHeader = mock((_) => { });
-    const postSession = mock((_) => { });
+    const postSessionHeaderMock = mock((_) => { });
+    const postSessionMock = mock((_) => { });
+    const postSessionFlushMock = mock((_) => { });
     setup(
         loadLastSessionMock,
         saveSessionMock,
-        postSessionHeader,
-        postSession,
+        postSessionHeaderMock,
+        postSessionMock,
+        postSessionFlushMock,
         () => NOW,
         () => SESSION_ID);
 
@@ -95,8 +101,8 @@ test('report the very first session', async () => {
     expectedHeader.fst_launch_month = true;
     expectedHeader.fst_launch_year = true;
     expectedHeader.fst_launch_version = true;
-    expect(postSessionHeader._getInvocations()).toStrictEqual(1);
-    expect(postSessionHeader._getLastCapturedParams()[0]).toStrictEqual(expectedHeader);
+    expect(postSessionHeaderMock._getInvocations()).toStrictEqual(1);
+    expect(postSessionHeaderMock._getLastCapturedParams()[0]).toStrictEqual(expectedHeader);
 });
 
 test('restore and report previous session', async () => {
@@ -109,13 +115,15 @@ test('restore and report previous session', async () => {
 
     const loadLastSessionMock = mock(() => prevSession);
     const saveSessionMock = mock((_) => { });
-    const postSessionHeader = mock((_) => { });
-    const postSession = mock((_) => { });
+    const postSessionHeaderMock = mock((_) => { });
+    const postSessionMock = mock((_) => { });
+    const postSessionFlushMock = mock((_) => { });
     setup(
         loadLastSessionMock,
         saveSessionMock,
-        postSessionHeader,
-        postSession,
+        postSessionHeaderMock,
+        postSessionMock,
+        postSessionFlushMock,
         () => NOW,
         () => SESSION_ID);
 
@@ -140,21 +148,23 @@ test('restore and report previous session', async () => {
     expectedHeader.fst_launch_version = true;
     expectedHeader.prev_stage = stage3;
     expectedHeader.since = LAST_YEAR;
-    expect(postSessionHeader._getInvocations()).toStrictEqual(1);
-    expect(postSessionHeader._getLastCapturedParams()[0]).toStrictEqual(expectedHeader);
+    expect(postSessionHeaderMock._getInvocations()).toStrictEqual(1);
+    expect(postSessionHeaderMock._getLastCapturedParams()[0]).toStrictEqual(expectedHeader);
 });
 
 test('report an event', async () => {
     // Setup
     const loadLastSessionMock = mock(() => null);
     const saveSessionMock = mock((_) => { });
-    const postSessionHeader = mock((_) => { });
-    const postSession = mock((_) => { });
+    const postSessionHeaderMock = mock((_) => { });
+    const postSessionMock = mock((_) => { });
+    const postSessionFlushMock = mock((_) => { });
     setup(
         loadLastSessionMock,
         saveSessionMock,
-        postSessionHeader,
-        postSession,
+        postSessionHeaderMock,
+        postSessionMock,
+        postSessionFlushMock,
         () => NOW,
         () => SESSION_ID);
     await initializeInternal(ACCOUNT_ID, APP_ID, VERSION, RELEASE_BUILD);
@@ -178,13 +188,15 @@ test('report a collapsible event', async () => {
     // Setup
     const loadLastSessionMock = mock(() => null);
     const saveSessionMock = mock((_) => { });
-    const postSessionHeader = mock((_) => { });
-    const postSession = mock((_) => { });
+    const postSessionHeaderMock = mock((_) => { });
+    const postSessionMock = mock((_) => { });
+    const postSessionFlushMock = mock((_) => { });
     setup(
         loadLastSessionMock,
         saveSessionMock,
-        postSessionHeader,
-        postSession,
+        postSessionHeaderMock,
+        postSessionMock,
+        postSessionFlushMock,
         () => NOW,
         () => SESSION_ID);
     await initializeInternal(ACCOUNT_ID, APP_ID, VERSION, RELEASE_BUILD);
@@ -207,13 +219,15 @@ test('report error', async () => {
     // Setup
     const loadLastSessionMock = mock(() => null);
     const saveSessionMock = mock((_) => { });
-    const postSessionHeader = mock((_) => { });
-    const postSession = mock((_) => { });
+    const postSessionHeaderMock = mock((_) => { });
+    const postSessionMock = mock((_) => { });
+    const postSessionFlushMock = mock((_) => { });
     setup(
         loadLastSessionMock,
         saveSessionMock,
-        postSessionHeader,
-        postSession,
+        postSessionHeaderMock,
+        postSessionMock,
+        postSessionFlushMock,
         () => NOW,
         () => SESSION_ID);
     await initializeInternal(ACCOUNT_ID, APP_ID, VERSION, RELEASE_BUILD);
@@ -235,13 +249,15 @@ test('report crash', async () => {
     // Setup
     const loadLastSessionMock = mock(() => null);
     const saveSessionMock = mock((_) => { });
-    const postSessionHeader = mock((_) => { });
-    const postSession = mock((_) => { });
+    const postSessionHeaderMock = mock((_) => { });
+    const postSessionMock = mock((_) => { });
+    const postSessionFlushMock = mock((_) => { });
     setup(
         loadLastSessionMock,
         saveSessionMock,
-        postSessionHeader,
-        postSession,
+        postSessionHeaderMock,
+        postSessionMock,
+        postSessionFlushMock,
         () => NOW,
         () => SESSION_ID);
     await initializeInternal(ACCOUNT_ID, APP_ID, VERSION, RELEASE_BUILD);
@@ -264,13 +280,15 @@ test('reporting an event udpates end time', async () => {
     // Setup
     const loadLastSessionMock = mock(() => null);
     const saveSessionMock = mock((_) => { });
-    const postSessionHeader = mock((_) => { });
-    const postSession = mock((_) => { });
+    const postSessionHeaderMock = mock((_) => { });
+    const postSessionMock = mock((_) => { });
+    const postSessionFlushMock = mock((_) => { });
     setup(
         loadLastSessionMock,
         saveSessionMock,
-        postSessionHeader,
-        postSession,
+        postSessionHeaderMock,
+        postSessionMock,
+        postSessionFlushMock,
         () => NOW,
         () => SESSION_ID);
     await initializeInternal(ACCOUNT_ID, APP_ID, VERSION, RELEASE_BUILD);
@@ -279,8 +297,9 @@ test('reporting an event udpates end time', async () => {
     setup(
         loadLastSessionMock,
         saveSessionMock,
-        postSessionHeader,
-        postSession,
+        postSessionHeaderMock,
+        postSessionMock,
+        postSessionFlushMock,
         () => LATER,
         () => SESSION_ID);
     reportEvent(CLICK_PLAY);
@@ -299,13 +318,15 @@ test('report stage transition', async () => {
     // Setup
     const loadLastSessionMock = mock(() => null);
     const saveSessionMock = mock((_) => { });
-    const postSessionHeader = mock((_) => { });
-    const postSession = mock((_) => { });
+    const postSessionHeaderMock = mock((_) => { });
+    const postSessionMock = mock((_) => { });
+    const postSessionFlushMock = mock((_) => { });
     setup(
         loadLastSessionMock,
         saveSessionMock,
-        postSessionHeader,
-        postSession,
+        postSessionHeaderMock,
+        postSessionMock,
+        postSessionFlushMock,
         () => NOW,
         () => SESSION_ID);
     await initializeInternal(ACCOUNT_ID, APP_ID, VERSION, RELEASE_BUILD);
@@ -325,13 +346,15 @@ test('report stage transition ignored when new stage is lower', async () => {
     // Setup
     const loadLastSessionMock = mock(() => null);
     const saveSessionMock = mock((_) => { });
-    const postSessionHeader = mock((_) => { });
-    const postSession = mock((_) => { });
+    const postSessionHeaderMock = mock((_) => { });
+    const postSessionMock = mock((_) => { });
+    const postSessionFlushMock = mock((_) => { });
     setup(
         loadLastSessionMock,
         saveSessionMock,
-        postSessionHeader,
-        postSession,
+        postSessionHeaderMock,
+        postSessionMock,
+        postSessionFlushMock,
         () => NOW,
         () => SESSION_ID);
     await initializeInternal(ACCOUNT_ID, APP_ID, VERSION, RELEASE_BUILD);
@@ -345,5 +368,94 @@ test('report stage transition ignored when new stage is lower', async () => {
     expectedSession.fst_launch = true;
     expectedSession.new_stage = createStage(3, 'stage3', () => NOW);
     expect(saveSessionMock._getInvocations()).toStrictEqual(3);
+    expect(saveSessionMock._getLastCapturedParams()[0]).toStrictEqual(expectedSession);
+});
+
+test('flush events first time', async () => {
+    // Setup
+    const loadLastSessionMock = mock(() => null);
+    const saveSessionMock = mock((_) => { });
+    const postSessionHeaderMock = mock((_) => { });
+    const postSessionMock = mock((_) => { });
+    const postSessionFlushMock = mock((_) => { });
+    setup(
+        loadLastSessionMock,
+        saveSessionMock,
+        postSessionHeaderMock,
+        postSessionMock,
+        postSessionFlushMock,
+        () => NOW,
+        () => SESSION_ID);
+    await initializeInternal(ACCOUNT_ID, APP_ID, VERSION, RELEASE_BUILD);
+    reportEvent(CLICK_PLAY);
+    reportEvent(CLICK_PAUSE);
+    reportEvent(CLICK_PLAY);
+
+    // Act
+    await flushEvents();
+
+    // Verify
+    const expectedFlush = createSessionFlush(SESSION_ID, ACCOUNT_ID, APP_ID, VERSION, RELEASE_BUILD, NOW);
+    expectedFlush.fst_launch = true;
+    expectedFlush.evts[CLICK_PLAY] = 2;
+    expectedFlush.evts[CLICK_PAUSE] = 1;
+    expect(postSessionFlushMock._getInvocations()).toStrictEqual(1);
+    expect(postSessionFlushMock._getLastCapturedParams()[0]).toStrictEqual(expectedFlush);
+
+    const expectedSession = createSession(SESSION_ID, ACCOUNT_ID, APP_ID, VERSION, RELEASE_BUILD, NOW, () => NOW);
+    expectedSession.fst_launch = true;
+    expectedSession.evts[CLICK_PLAY] = 2;
+    expectedSession.evts[CLICK_PAUSE] = 1;
+    expectedSession.evt_seq = [CLICK_PLAY, CLICK_PAUSE, CLICK_PLAY];
+    expectedSession.flushed[CLICK_PLAY] = 2;
+    expectedSession.flushed[CLICK_PAUSE] = 1;
+    expect(saveSessionMock._getInvocations()).toStrictEqual(5);
+    expect(saveSessionMock._getLastCapturedParams()[0]).toStrictEqual(expectedSession);
+});
+
+test('flush events second time', async () => {
+    // Setup
+    const loadLastSessionMock = mock(() => null);
+    const saveSessionMock = mock((_) => { });
+    const postSessionHeaderMock = mock((_) => { });
+    const postSessionMock = mock((_) => { });
+    const postSessionFlushMock = mock((_) => { });
+    setup(
+        loadLastSessionMock,
+        saveSessionMock,
+        postSessionHeaderMock,
+        postSessionMock,
+        postSessionFlushMock,
+        () => NOW,
+        () => SESSION_ID);
+    await initializeInternal(ACCOUNT_ID, APP_ID, VERSION, RELEASE_BUILD);
+    reportEvent(CLICK_PLAY);
+    reportEvent(CLICK_PAUSE);
+    reportEvent(CLICK_PLAY);
+    await flushEvents();
+
+    // Act
+    reportEvent(CLICK_PAUSE);
+    reportEvent(CLICK_PLAY);
+    await flushEvents();
+
+    // Verify
+    const expectedFlush = createSessionFlush(SESSION_ID, ACCOUNT_ID, APP_ID, VERSION, RELEASE_BUILD, NOW);
+    expectedFlush.fst_launch = true;
+    expectedFlush.evts[CLICK_PLAY] = 3;
+    expectedFlush.evts[CLICK_PAUSE] = 2;
+    expectedFlush.flushed[CLICK_PLAY] = 2;
+    expectedFlush.flushed[CLICK_PAUSE] = 1;
+    expect(postSessionFlushMock._getInvocations()).toStrictEqual(2);
+    expect(postSessionFlushMock._getLastCapturedParams()[0]).toStrictEqual(expectedFlush);
+
+    const expectedSession = createSession(SESSION_ID, ACCOUNT_ID, APP_ID, VERSION, RELEASE_BUILD, NOW, () => NOW);
+    expectedSession.fst_launch = true;
+    expectedSession.evts[CLICK_PLAY] = 3;
+    expectedSession.evts[CLICK_PAUSE] = 2;
+    expectedSession.evt_seq = [CLICK_PLAY, CLICK_PAUSE, CLICK_PLAY, CLICK_PAUSE, CLICK_PLAY];
+    expectedSession.flushed[CLICK_PLAY] = 3;
+    expectedSession.flushed[CLICK_PAUSE] = 2;
+    expect(saveSessionMock._getInvocations()).toStrictEqual(8);
     expect(saveSessionMock._getLastCapturedParams()[0]).toStrictEqual(expectedSession);
 });

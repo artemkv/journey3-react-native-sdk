@@ -4,7 +4,7 @@ import { createSessionFromJson } from './domain.js';
 const sessionKey = 'journey3.net/session';
 
 const loadLastSession = async (getNowUtc, getNewId) => {
-    const json = await AsyncStorage.getItem(sessionKey)
+    const json = await AsyncStorage.getItem(sessionKey);
     if (!json) {
         return null;
     }
@@ -12,7 +12,7 @@ const loadLastSession = async (getNowUtc, getNewId) => {
 };
 
 const saveSession = async session => {
-    return AsyncStorage.setItem(sessionKey, JSON.stringify(session))
+    return AsyncStorage.setItem(sessionKey, JSON.stringify(session));
 };
 
 export default {
