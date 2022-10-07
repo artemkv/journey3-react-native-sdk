@@ -94,6 +94,20 @@ You don't need to remember which stage you already reported. The plugin will rem
 
 Maximum 10 stages are supported.
 
+### Flush events
+
+Normally, the previous session is reported upon the app restart. In some cases you might want to report events before the session is terminated by forcefully calling _flushEvents_ function.
+
+This might help tracking events coming from users who use the app once and then immediately uninstall it.
+
+```js
+import {flushEvents} from 'journey3-react-native-sdk';
+
+flushEvents();
+```
+
+Flushing events introduces extra network traffic, so use it with caution. Do not flush session every time you report an event!
+
 ## GDPR compliance
 
 Journey3 is designed to be anonymous by default.
@@ -130,7 +144,7 @@ __Example, good:__ 'click_play', 'click_pause', 'add_to_favorites', 'search_by_a
 
 __Example, bad:__ 'user_12345_bought_item_34556'
 
-As we don't track any personally personally identifiable data, and make our best effort to render the stored data anonymous, we judge that the data collected by the connector does not fall within the scope of the GDPR. This means you don't need to ask for the user opt-in.
+As we don't track any personally personally identifiable data, and make our best effort to render the stored data anonymous, we judge that the data collected by the connector does not fall within the scope of the GDPR.
 
 That is, unless you abuse the API and use event or stage names that break the anonymity.
 

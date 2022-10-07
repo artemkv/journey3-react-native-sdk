@@ -295,7 +295,7 @@ export const reportStageTransition = async (stage, stageName) => {
  * Flushed the events in the current session.
  * Use this method to report events before the session is properly terminated.
  * 
- * Flushing events introduces extra network trafic, so use it with caution.
+ * Flushing events introduces extra network traffic, so use it with caution.
  * Do not flush session every time you report an event, the users won't be happy.
  * 
  * Consider flushing the session after first 30 seconds of using the app or upon the app exit.
