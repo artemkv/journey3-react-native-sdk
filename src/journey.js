@@ -155,7 +155,7 @@ export const initializeInternal = async (accountId, appId, version, isRelease) =
  * for example '(scroll_to_next_album)'.
  */
 export const reportEvent = async (eventName, isCollapsible) => {
-    reportEventInternal(eventName, isCollapsible);
+    await reportEventInternal(eventName, isCollapsible);
 }
 
 /**
@@ -170,7 +170,7 @@ export const reportEvent = async (eventName, isCollapsible) => {
  * Do not include any personal data as an event name!
  */
 export const reportError = async (eventName) => {
-    reportEventInternal(eventName, false, true);
+    await reportEventInternal(eventName, false, true);
 }
 
 /**
@@ -184,7 +184,7 @@ export const reportError = async (eventName) => {
  * Do not include any personal data as an event name!
  */
 export const reportCrash = async (eventName) => {
-    reportEventInternal(eventName, false, true, true);
+    await reportEventInternal(eventName, false, true, true);
 }
 
 const reportEventInternal = async (eventName, isCollapsible, isError, isCrash) => {
